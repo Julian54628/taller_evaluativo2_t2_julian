@@ -5,6 +5,8 @@ public class Ingrediente {
     private double cantidad;
     private String unidad;
 
+    public Ingrediente() {}
+
     public Ingrediente(String nombre, double cantidad, String unidad) {
         this.nombre = nombre;
         this.cantidad = cantidad;
@@ -15,16 +17,23 @@ public class Ingrediente {
         return nombre;
     }
 
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
     public double getCantidad() {
         return cantidad;
+    }
+
+    public void setCantidad(double cantidad) {
+        this.cantidad = cantidad;
     }
 
     public String getUnidad() {
         return unidad;
     }
 
-    @Override
-    public String toString() {
-        return cantidad + " " + unidad + " de " + nombre;
+    public void setUnidad(String unidad) {
+        this.unidad = unidad;
     }
 }

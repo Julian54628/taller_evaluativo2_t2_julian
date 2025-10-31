@@ -1,7 +1,7 @@
 package is.escuela.edu.co.taller_evaluativo2_t2_julian.repository;
 
-import is.escuela.edu.co.taller_evaluativo2_t2_julian.Modelo.Usuario;
-import is.escuela.edu.co.taller_evaluativo2_t2_julian.Modelo.TipoCocinero;
+import is.escuela.edu.co.taller_evaluativo2_t2_julian.Model.Usuario;
+import is.escuela.edu.co.taller_evaluativo2_t2_julian.Model.TipoCocinero;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
