@@ -1,4 +1,4 @@
-package is.escuela.edu.co.taller_evaluativo2_t2_julian.Servicio;
+package is.escuela.edu.co.taller_evaluativo2_t2_julian.service;
 
 import is.escuela.edu.co.taller_evaluativo2_t2_julian.Modelo.Receta;
 import is.escuela.edu.co.taller_evaluativo2_t2_julian.Modelo.FabricaReceta;
