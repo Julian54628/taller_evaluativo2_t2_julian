@@ -1,11 +1,11 @@
 package is.escuela.edu.co.taller_evaluativo2_t2_julian.service;
 
-import is.escuela.edu.co.taller_evaluativo2_t2_julian.Modelo.Receta;
-import is.escuela.edu.co.taller_evaluativo2_t2_julian.Modelo.FabricaReceta;
-import is.escuela.edu.co.taller_evaluativo2_t2_julian.Modelo.Usuario;
-import is.escuela.edu.co.taller_evaluativo2_t2_julian.Modelo.TipoCocinero;
-import is.escuela.edu.co.taller_evaluativo2_t2_julian.Modelo.Ingrediente;
-import is.escuela.edu.co.taller_evaluativo2_t2_julian.Repositorio.RepositorioReceta;
+import is.escuela.edu.co.taller_evaluativo2_t2_julian.Model.Receta;
+import is.escuela.edu.co.taller_evaluativo2_t2_julian.Model.RecetaFactory;
+import is.escuela.edu.co.taller_evaluativo2_t2_julian.Model.Usuario;
+import is.escuela.edu.co.taller_evaluativo2_t2_julian.Model.TipoCocinero;
+import is.escuela.edu.co.taller_evaluativo2_t2_julian.Model.Ingrediente;
+import is.escuela.edu.co.taller_evaluativo2_t2_julian.repository.RepositorioReceta;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +19,7 @@ public class ServicioReceta {
     private RepositorioReceta repositorioReceta;
 
     @Autowired
-    private FabricaReceta fabricaReceta;
+    private RecetaFactory RecetaFactory;
 
     @Autowired
     private ServicioUsuario servicioUsuario;
@@ -31,7 +31,7 @@ public class ServicioReceta {
         Usuario televidente = servicioUsuario.obtenerUsuarioPorId(usuarioId)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
-        Receta receta = fabricaReceta.crearRecetaTelevidente(titulo, ingredientes, pasosPreparacion, televidente);
+        Receta receta = RecetaFactory.crearRecetaTelevidente(titulo, ingredientes, pasosPreparacion, televidente);
         receta.setConsecutivo(consecutivo++);
         return repositorioReceta.save(receta);
     }
@@ -41,7 +41,7 @@ public class ServicioReceta {
         Usuario participante = servicioUsuario.obtenerUsuarioPorId(usuarioId)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
-        Receta receta = fabricaReceta.crearRecetaParticipante(titulo, ingredientes, pasosPreparacion, participante, temporada);
+        Receta receta = RecetaFactory.crearRecetaParticipante(titulo, ingredientes, pasosPreparacion, participante, temporada);
         receta.setConsecutivo(consecutivo++);
         return repositorioReceta.save(receta);
     }
@@ -51,7 +51,7 @@ public class ServicioReceta {
         Usuario cocinero = servicioUsuario.obtenerUsuarioPorId(usuarioId)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
-        Receta receta = fabricaReceta.crearRecetaCocinero(titulo, ingredientes, pasosPreparacion, cocinero);
+        Receta receta = RecetaFactory.crearRecetaCocinero(titulo, ingredientes, pasosPreparacion, cocinero);
         receta.setConsecutivo(consecutivo++);
         return repositorioReceta.save(receta);
     }
