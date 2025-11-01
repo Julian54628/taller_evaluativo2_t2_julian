@@ -98,4 +98,6 @@ Validar busqueda por ingrediente.
 ![img_1.png](Doc/BusquedaIngrediente.png)
 
 
+Despliegue
 
+![img_1.png](img_1.png)
