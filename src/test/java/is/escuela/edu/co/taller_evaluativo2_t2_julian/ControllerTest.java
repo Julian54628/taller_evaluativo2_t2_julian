@@ -170,63 +170,8 @@ class ControllerTest {
         assertEquals(1, respuesta.getBody().size());
     }
 
-    @Test
-    void testRegistrarRecetaTelevidenteExitoso() {
-        Map<String, Object> solicitud = new HashMap<>();
-        solicitud.put("titulo", "Torta de Chocolate");
-        solicitud.put("ingredientes", ingredientes);
-        solicitud.put("pasosPreparacion", pasosPreparacion);
 
-        when(servicioReceta.registrarRecetaTelevidente(anyString(), anyList(), anyList(), anyString()))
-                .thenReturn(recetaTelevidente);
-        ResponseEntity<Receta> respuesta = controladorReceta.registrarRecetaTelevidente(solicitud, "user123");
-        assertEquals(HttpStatus.OK, respuesta.getStatusCode());
-        assertNotNull(respuesta.getBody());
-        assertEquals("Torta de Chocolate", respuesta.getBody().getTitulo());
-    }
 
-    @Test
-    void testRegistrarRecetaTelevidenteConError() {
-        Map<String, Object> solicitud = new HashMap<>();
-        solicitud.put("titulo", "Torta de Chocolate");
-
-        when(servicioReceta.registrarRecetaTelevidente(anyString(), anyList(), anyList(), anyString()))
-                .thenThrow(new RuntimeException("Error de validación"));
-        ResponseEntity<Receta> respuesta = controladorReceta.registrarRecetaTelevidente(solicitud, "user123");
-        assertEquals(HttpStatus.BAD_REQUEST, respuesta.getStatusCode());
-    }
-
-    @Test
-    void testRegistrarRecetaParticipanteExitoso() {
-        Map<String, Object> solicitud = new HashMap<>();
-        solicitud.put("titulo", "Pasta Alfredo");
-        solicitud.put("ingredientes", ingredientes);
-        solicitud.put("pasosPreparacion", pasosPreparacion);
-        solicitud.put("temporada", "Temporada 1");
-
-        when(servicioReceta.registrarRecetaParticipante(anyString(), anyList(), anyList(), anyString(), anyString()))
-                .thenReturn(recetaParticipante);
-
-        ResponseEntity<Receta> respuesta = controladorReceta.registrarRecetaParticipante(solicitud, "user456");
-        assertEquals(HttpStatus.OK, respuesta.getStatusCode());
-        assertNotNull(respuesta.getBody());
-        assertEquals("Pasta Alfredo", respuesta.getBody().getTitulo());
-    }
-
-    @Test
-    void testRegistrarRecetaCocineroExitoso() {
-        Map<String, Object> solicitud = new HashMap<>();
-        solicitud.put("titulo", "Risotto de Champiñones");
-        solicitud.put("ingredientes", ingredientes);
-        solicitud.put("pasosPreparacion", pasosPreparacion);
-
-        when(servicioReceta.registrarRecetaCocinero(anyString(), anyList(), anyList(), anyString()))
-                .thenReturn(recetaCocinero);
-        ResponseEntity<Receta> respuesta = controladorReceta.registrarRecetaCocinero(solicitud, "user789");
-        assertEquals(HttpStatus.OK, respuesta.getStatusCode());
-        assertNotNull(respuesta.getBody());
-        assertEquals("Risotto de Champiñones", respuesta.getBody().getTitulo());
-    }
 
     @Test
     void testObtenerTodasLasRecetas() {

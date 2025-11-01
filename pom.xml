@@ -84,6 +84,12 @@
     </dependencies>
 
     <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>false</filtering>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
@@ -192,6 +198,37 @@
                     <source>${java.version}</source>
                     <target>${java.version}</target>
                     <release>${java.version}</release>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>com.microsoft.azure</groupId>
+                <artifactId>azure-webapp-maven-plugin</artifactId>
+                <version>2.12.0</version>
+                <configuration>
+                    <schemaVersion>V2</schemaVersion>
+                    <resourceGroup>taller-evaluativo-rg</resourceGroup>
+                    <appName>taller-evaluativo-app</appName>
+                    <runtime>
+                        <os>Linux</os>
+                        <javaVersion>Java 17</javaVersion>
+                        <webContainer>Java SE</webContainer>
+                    </runtime>
+                    <deployment>
+                        <resources>
+                            <resource>
+                                <directory>${project.basedir}/target</directory>
+                                <includes>
+                                    <include>*.jar</include>
+                                </includes>
+                            </resource>
+                        </resources>
+                    </deployment>
+                    <appSettings>
+                        <property>
+                            <name>MONGODB_URI</name>
+                            <value>mongodb+srv://TallerEvaluativo:Ingenieria3.@cluster0.3f7eyme.mongodb.net/taller_evaluativo?retryWrites=true&amp;w=majority</value>
+                        </property>
+                    </appSettings>
                 </configuration>
             </plugin>
         </plugins>

@@ -21,6 +21,9 @@ public interface RepositorioReceta extends MongoRepository<Receta, String> {
     List<Receta> findByIngredienteContaining(String ingrediente);
 
     Optional<Receta> findByConsecutivo(int consecutivo);
+
     List<Receta> findByAprobada(boolean aprobada);
+
+    @Query("{ 'cocinero.id': ?0 }")
     List<Receta> findByCocineroId(String cocineroId);
 }

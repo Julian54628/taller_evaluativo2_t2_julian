@@ -20,7 +20,7 @@ public class ControladorReceta {
     private ServicioReceta servicioReceta;
 
     @PostMapping("/televidente/{usuarioId}")
-    public ResponseEntity<Receta> registrarRecetaTelevidente(
+    public ResponseEntity<?> registrarRecetaTelevidente(
             @RequestBody Map<String, Object> solicitud,
             @PathVariable String usuarioId) {
         try {
@@ -32,12 +32,12 @@ public class ControladorReceta {
             );
             return ResponseEntity.ok(receta);
         } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
     @PostMapping("/participante/{usuarioId}")
-    public ResponseEntity<Receta> registrarRecetaParticipante(
+    public ResponseEntity<?> registrarRecetaParticipante(
             @RequestBody Map<String, Object> solicitud,
             @PathVariable String usuarioId) {
         try {
@@ -50,12 +50,12 @@ public class ControladorReceta {
             );
             return ResponseEntity.ok(receta);
         } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
     @PostMapping("/cocinero/{usuarioId}")
-    public ResponseEntity<Receta> registrarRecetaCocinero(
+    public ResponseEntity<?> registrarRecetaCocinero(
             @RequestBody Map<String, Object> solicitud,
             @PathVariable String usuarioId) {
         try {
@@ -67,82 +67,130 @@ public class ControladorReceta {
             );
             return ResponseEntity.ok(receta);
         } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
     @GetMapping
     public ResponseEntity<List<Receta>> obtenerTodasLasRecetas() {
-        List<Receta> recetas = servicioReceta.obtenerTodasLasRecetas();
-        return ResponseEntity.ok(recetas);
+        try {
+            List<Receta> recetas = servicioReceta.obtenerTodasLasRecetas();
+            return ResponseEntity.ok(recetas);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @GetMapping("/consecutivo/{consecutivo}")
     public ResponseEntity<Receta> obtenerRecetaPorConsecutivo(@PathVariable int consecutivo) {
-        Optional<Receta> receta = servicioReceta.obtenerRecetaPorConsecutivo(consecutivo);
-        return receta.map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        try {
+            Optional<Receta> receta = servicioReceta.obtenerRecetaPorConsecutivo(consecutivo);
+            return receta.map(ResponseEntity::ok)
+                    .orElse(ResponseEntity.notFound().build());
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @GetMapping("/participantes")
     public ResponseEntity<List<Receta>> obtenerRecetasDeParticipantes() {
-        List<Receta> recetas = servicioReceta.obtenerRecetasDeParticipantes();
-        return ResponseEntity.ok(recetas);
+        try {
+            List<Receta> recetas = servicioReceta.obtenerRecetasDeParticipantes();
+            return ResponseEntity.ok(recetas);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @GetMapping("/televidentes")
     public ResponseEntity<List<Receta>> obtenerRecetasDeTelevidentes() {
-        List<Receta> recetas = servicioReceta.obtenerRecetasDeTelevidentes();
-        return ResponseEntity.ok(recetas);
+        try {
+            List<Receta> recetas = servicioReceta.obtenerRecetasDeTelevidentes();
+            return ResponseEntity.ok(recetas);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @GetMapping("/cocineros")
     public ResponseEntity<List<Receta>> obtenerRecetasDeCocineros() {
-        List<Receta> recetas = servicioReceta.obtenerRecetasDeCocineros();
-        return ResponseEntity.ok(recetas);
+        try {
+            List<Receta> recetas = servicioReceta.obtenerRecetasDeCocineros();
+            return ResponseEntity.ok(recetas);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @GetMapping("/temporada/{temporada}")
     public ResponseEntity<List<Receta>> obtenerRecetasPorTemporada(@PathVariable String temporada) {
-        List<Receta> recetas = servicioReceta.obtenerRecetasPorTemporada(temporada);
-        return ResponseEntity.ok(recetas);
+        try {
+            List<Receta> recetas = servicioReceta.obtenerRecetasPorTemporada(temporada);
+            return ResponseEntity.ok(recetas);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @GetMapping("/buscar")
     public ResponseEntity<List<Receta>> buscarRecetasPorIngrediente(@RequestParam String ingrediente) {
-        List<Receta> recetas = servicioReceta.buscarRecetasPorIngrediente(ingrediente);
-        return ResponseEntity.ok(recetas);
+        try {
+            List<Receta> recetas = servicioReceta.buscarRecetasPorIngrediente(ingrediente);
+            return ResponseEntity.ok(recetas);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminarReceta(@PathVariable String id) {
-        boolean eliminada = servicioReceta.eliminarReceta(id);
-        return eliminada ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
+        try {
+            boolean eliminada = servicioReceta.eliminarReceta(id);
+            return eliminada ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Receta> actualizarReceta(@PathVariable String id, @RequestBody Receta receta) {
-        Optional<Receta> recetaActualizada = servicioReceta.actualizarReceta(id, receta);
-        return recetaActualizada.map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        try {
+            Optional<Receta> recetaActualizada = servicioReceta.actualizarReceta(id, receta);
+            return recetaActualizada.map(ResponseEntity::ok)
+                    .orElse(ResponseEntity.notFound().build());
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @PatchMapping("/{id}/aprobar")
     public ResponseEntity<Receta> aprobarReceta(@PathVariable String id) {
-        Optional<Receta> recetaAprobada = servicioReceta.aprobarReceta(id);
-        return recetaAprobada.map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        try {
+            Optional<Receta> recetaAprobada = servicioReceta.aprobarReceta(id);
+            return recetaAprobada.map(ResponseEntity::ok)
+                    .orElse(ResponseEntity.notFound().build());
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @GetMapping("/aprobadas")
     public ResponseEntity<List<Receta>> obtenerRecetasAprobadas() {
-        List<Receta> recetas = servicioReceta.obtenerRecetasAprobadas();
-        return ResponseEntity.ok(recetas);
+        try {
+            List<Receta> recetas = servicioReceta.obtenerRecetasAprobadas();
+            return ResponseEntity.ok(recetas);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @GetMapping("/cocinero/{cocineroId}")
     public ResponseEntity<List<Receta>> obtenerRecetasPorCocinero(@PathVariable String cocineroId) {
-        List<Receta> recetas = servicioReceta.obtenerRecetasPorCocinero(cocineroId);
-        return ResponseEntity.ok(recetas);
+        try {
+            List<Receta> recetas = servicioReceta.obtenerRecetasPorCocinero(cocineroId);
+            return ResponseEntity.ok(recetas);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 }

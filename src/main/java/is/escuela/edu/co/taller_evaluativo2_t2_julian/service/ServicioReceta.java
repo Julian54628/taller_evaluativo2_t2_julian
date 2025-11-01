@@ -28,6 +28,12 @@ public class ServicioReceta {
 
     public Receta registrarRecetaTelevidente(String titulo, List<Ingrediente> ingredientes,
                                              List<String> pasosPreparacion, String usuarioId) {
+        if (titulo == null || titulo.trim().isEmpty()) {
+            throw new RuntimeException("El título no puede estar vacío");
+        }
+        if (ingredientes == null || ingredientes.isEmpty()) {
+            throw new RuntimeException("Los ingredientes no pueden estar vacíos");
+        }
         Usuario televidente = servicioUsuario.obtenerUsuarioPorId(usuarioId)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
@@ -38,6 +44,15 @@ public class ServicioReceta {
 
     public Receta registrarRecetaParticipante(String titulo, List<Ingrediente> ingredientes,
                                               List<String> pasosPreparacion, String usuarioId, String temporada) {
+        if (titulo == null || titulo.trim().isEmpty()) {
+            throw new RuntimeException("El título no puede estar vacío");
+        }
+        if (ingredientes == null || ingredientes.isEmpty()) {
+            throw new RuntimeException("Los ingredientes no pueden estar vacíos");
+        }
+        if (temporada == null || temporada.trim().isEmpty()) {
+            throw new RuntimeException("La temporada no puede estar vacía");
+        }
         Usuario participante = servicioUsuario.obtenerUsuarioPorId(usuarioId)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
@@ -48,6 +63,12 @@ public class ServicioReceta {
 
     public Receta registrarRecetaCocinero(String titulo, List<Ingrediente> ingredientes,
                                           List<String> pasosPreparacion, String usuarioId) {
+        if (titulo == null || titulo.trim().isEmpty()) {
+            throw new RuntimeException("El título no puede estar vacío");
+        }
+        if (ingredientes == null || ingredientes.isEmpty()) {
+            throw new RuntimeException("Los ingredientes no pueden estar vacíos");
+        }
         Usuario cocinero = servicioUsuario.obtenerUsuarioPorId(usuarioId)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
@@ -57,42 +78,79 @@ public class ServicioReceta {
     }
 
     public List<Receta> obtenerTodasLasRecetas() {
-        return repositorioReceta.findAll();
+        List<Receta> recetas = repositorioReceta.findAll();
+        if (recetas.isEmpty()) {
+            throw new RuntimeException("No se encontraron recetas");
+        }
+        return recetas;
     }
 
     public Optional<Receta> obtenerRecetaPorConsecutivo(int consecutivo) {
-        return repositorioReceta.findByConsecutivo(consecutivo);
+        Optional<Receta> receta = repositorioReceta.findByConsecutivo(consecutivo);
+        if (receta.isEmpty()) {
+            throw new RuntimeException("Receta con consecutivo " + consecutivo + " no encontrada");
+        }
+        return receta;
     }
 
     public List<Receta> obtenerRecetasDeParticipantes() {
-        return repositorioReceta.findByTipoCocinero(TipoCocinero.PARTICIPANTE);
+        List<Receta> recetas = repositorioReceta.findByTipoCocinero(TipoCocinero.PARTICIPANTE);
+        if (recetas.isEmpty()) {
+            throw new RuntimeException("No se encontraron recetas de participantes");
+        }
+        return recetas;
     }
 
     public List<Receta> obtenerRecetasDeTelevidentes() {
-        return repositorioReceta.findByTipoCocinero(TipoCocinero.TELEVIDENTE);
+        List<Receta> recetas = repositorioReceta.findByTipoCocinero(TipoCocinero.TELEVIDENTE);
+        if (recetas.isEmpty()) {
+            throw new RuntimeException("No se encontraron recetas de televidentes");
+        }
+        return recetas;
     }
 
     public List<Receta> obtenerRecetasDeCocineros() {
-        return repositorioReceta.findByTipoCocinero(TipoCocinero.COMPETIDOR);
+        List<Receta> recetas = repositorioReceta.findByTipoCocinero(TipoCocinero.COMPETIDOR);
+        if (recetas.isEmpty()) {
+            throw new RuntimeException("No se encontraron recetas de cocineros");
+        }
+        return recetas;
     }
 
     public List<Receta> obtenerRecetasPorTemporada(String temporada) {
-        return repositorioReceta.findByTemporada(temporada);
+        if (temporada == null || temporada.trim().isEmpty()) {
+            throw new RuntimeException("La temporada no puede estar vacía");
+        }
+        List<Receta> recetas = repositorioReceta.findByTemporada(temporada);
+        if (recetas.isEmpty()) {
+            throw new RuntimeException("No se encontraron recetas para la temporada: " + temporada);
+        }
+        return recetas;
     }
 
     public List<Receta> buscarRecetasPorIngrediente(String ingrediente) {
-        return repositorioReceta.findByIngredienteContaining(ingrediente);
+        if (ingrediente == null || ingrediente.trim().isEmpty()) {
+            throw new RuntimeException("El ingrediente no puede estar vacío");
+        }
+        List<Receta> recetas = repositorioReceta.findByIngredienteContaining(ingrediente);
+        if (recetas.isEmpty()) {
+            throw new RuntimeException("No se encontraron recetas con el ingrediente: " + ingrediente);
+        }
+        return recetas;
     }
 
     public boolean eliminarReceta(String id) {
-        if (repositorioReceta.existsById(id)) {
-            repositorioReceta.deleteById(id);
-            return true;
+        if (!repositorioReceta.existsById(id)) {
+            throw new RuntimeException("Receta con ID " + id + " no encontrada");
         }
-        return false;
+        repositorioReceta.deleteById(id);
+        return true;
     }
 
     public Optional<Receta> actualizarReceta(String id, Receta recetaActualizada) {
+        if (!repositorioReceta.existsById(id)) {
+            throw new RuntimeException("Receta con ID " + id + " no encontrada");
+        }
         return repositorioReceta.findById(id)
                 .map(recetaExistente -> {
                     actualizarCamposReceta(recetaExistente, recetaActualizada);
@@ -109,6 +167,9 @@ public class ServicioReceta {
     }
 
     public Optional<Receta> aprobarReceta(String id) {
+        if (!repositorioReceta.existsById(id)) {
+            throw new RuntimeException("Receta con ID " + id + " no encontrada");
+        }
         return repositorioReceta.findById(id)
                 .map(receta -> {
                     receta.setAprobada(true);
@@ -117,10 +178,21 @@ public class ServicioReceta {
     }
 
     public List<Receta> obtenerRecetasAprobadas() {
-        return repositorioReceta.findByAprobada(true);
+        List<Receta> recetas = repositorioReceta.findByAprobada(true);
+        if (recetas.isEmpty()) {
+            throw new RuntimeException("No se encontraron recetas aprobadas");
+        }
+        return recetas;
     }
 
     public List<Receta> obtenerRecetasPorCocinero(String cocineroId) {
-        return repositorioReceta.findByCocineroId(cocineroId);
+        if (cocineroId == null || cocineroId.trim().isEmpty()) {
+            throw new RuntimeException("El ID del cocinero no puede estar vacío");
+        }
+        List<Receta> recetas = repositorioReceta.findByCocineroId(cocineroId);
+        if (recetas.isEmpty()) {
+            throw new RuntimeException("No se encontraron recetas para el cocinero con ID: " + cocineroId);
+        }
+        return recetas;
     }
 }

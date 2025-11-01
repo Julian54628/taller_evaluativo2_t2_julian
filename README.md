@@ -86,3 +86,16 @@ en azure u otra plataforma de nube.
 ### MONGOBD
 
 ![img.png](Doc/mongodb.png)
+
+### Taller
+
+Validar que se registra una receta.
+
+![img.png](Doc/recetaGuardada.png)
+
+Validar busqueda por ingrediente.
+
+![img_1.png](Doc/BusquedaIngrediente.png)
+
+
+
