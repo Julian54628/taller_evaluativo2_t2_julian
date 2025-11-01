@@ -82,3 +82,7 @@ en azure u otra plataforma de nube.
 #### SONARQUBE
 
 ![img.png](Doc/sonarqube.png)
+
+### MONGOBD
+
+![img.png](Doc/mongodb.png)

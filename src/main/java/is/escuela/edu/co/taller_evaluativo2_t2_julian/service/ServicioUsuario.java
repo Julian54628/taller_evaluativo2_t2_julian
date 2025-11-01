@@ -18,40 +18,103 @@ public class ServicioUsuario {
     private RepositorioUsuario repositorioUsuario;
 
     @Autowired
-    private UsuarioFactory UsuarioFactory;
+    private UsuarioFactory usuarioFactory;
 
     @Autowired
     private ValidadorUsuario validadorUsuario;
 
     public Usuario registrarTelevidente(String nombre, String documento, String celular, String correo) {
-        Usuario usuario = UsuarioFactory.crearTelevidente(nombre, documento, celular, correo);
-        return guardarUsuario(usuario);
+        try {
+            System.out.println("Registrando televidente: " + nombre);
+
+            if (nombre == null || nombre.trim().isEmpty()) {
+                throw new RuntimeException("El nombre es requerido");
+            }
+            if (documento == null || documento.trim().isEmpty()) {
+                throw new RuntimeException("El documento es requerido");
+            }
+            if (correo == null || correo.trim().isEmpty()) {
+                throw new RuntimeException("El correo es requerido");
+            }
+
+            Usuario usuario = usuarioFactory.crearTelevidente(nombre, documento, celular, correo);
+            return guardarUsuario(usuario);
+
+        } catch (Exception e) {
+            System.out.println("Error en registrarTelevidente: " + e.getMessage());
+            throw new RuntimeException("Error al registrar televidente: " + e.getMessage());
+        }
     }
 
     public Usuario registrarParticipante(String nombre, String documento, String celular, String correo, String temporada) {
-        Usuario usuario = UsuarioFactory.crearParticipante(nombre, documento, celular, correo, temporada);
-        return guardarUsuario(usuario);
+        try {
+            System.out.println("Registrando participante: " + nombre);
+
+            if (nombre == null || nombre.trim().isEmpty()) {
+                throw new RuntimeException("El nombre es requerido");
+            }
+            if (documento == null || documento.trim().isEmpty()) {
+                throw new RuntimeException("El documento es requerido");
+            }
+            if (correo == null || correo.trim().isEmpty()) {
+                throw new RuntimeException("El correo es requerido");
+            }
+            if (temporada == null || temporada.trim().isEmpty()) {
+                throw new RuntimeException("La temporada es requerida para participantes");
+            }
+
+            Usuario usuario = usuarioFactory.crearParticipante(nombre, documento, celular, correo, temporada);
+            return guardarUsuario(usuario);
+
+        } catch (Exception e) {
+            System.out.println("Error en registrarParticipante: " + e.getMessage());
+            throw new RuntimeException("Error al registrar participante: " + e.getMessage());
+        }
     }
 
     public Usuario registrarCocineroJurado(String nombre, String documento, String celular, String correo) {
-        Usuario usuario = UsuarioFactory.crearCocineroJurado(nombre, documento, celular, correo);
-        return guardarUsuario(usuario);
+        try {
+            System.out.println("Registrando cocinero: " + nombre);
+
+            if (nombre == null || nombre.trim().isEmpty()) {
+                throw new RuntimeException("El nombre es requerido");
+            }
+            if (documento == null || documento.trim().isEmpty()) {
+                throw new RuntimeException("El documento es requerido");
+            }
+            if (correo == null || correo.trim().isEmpty()) {
+                throw new RuntimeException("El correo es requerido");
+            }
+
+            Usuario usuario = usuarioFactory.crearCocineroJurado(nombre, documento, celular, correo);
+            return guardarUsuario(usuario);
+
+        } catch (Exception e) {
+            System.out.println("Error en registrarCocineroJurado: " + e.getMessage());
+            throw new RuntimeException("Error al registrar cocinero: " + e.getMessage());
+        }
     }
 
     private Usuario guardarUsuario(Usuario usuario) {
-        String resultadoValidacion = validadorUsuario.validar(usuario);
-        if (!resultadoValidacion.equals("Usuario válido")) {
-            throw new RuntimeException(resultadoValidacion);
-        }
+        try {
+            String resultadoValidacion = validadorUsuario.validar(usuario);
+            if (!resultadoValidacion.equals("Usuario válido")) {
+                throw new RuntimeException(resultadoValidacion);
+            }
 
-        if (repositorioUsuario.findByDocumento(usuario.getDocumento()).isPresent()) {
-            throw new RuntimeException("Ya existe un usuario con este documento");
-        }
-        if (repositorioUsuario.findByCorreo(usuario.getCorreo()).isPresent()) {
-            throw new RuntimeException("Ya existe un usuario con este correo");
-        }
+            if (repositorioUsuario.findByDocumento(usuario.getDocumento()).isPresent()) {
+                throw new RuntimeException("Ya existe un usuario con el documento: " + usuario.getDocumento());
+            }
+            if (repositorioUsuario.findByCorreo(usuario.getCorreo()).isPresent()) {
+                throw new RuntimeException("Ya existe un usuario con el correo: " + usuario.getCorreo());
+            }
 
-        return repositorioUsuario.save(usuario);
+            return repositorioUsuario.save(usuario);
+
+        } catch (Exception e) {
+            System.out.println("Error en guardarUsuario: " + e.getMessage());
+            throw new RuntimeException("Error al guardar usuario: " + e.getMessage());
+        }
     }
 
     public List<Usuario> obtenerTodosLosUsuarios() {
