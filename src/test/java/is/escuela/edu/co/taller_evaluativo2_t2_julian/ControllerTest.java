@@ -329,4 +329,92 @@ class ControllerTest {
             controladorReceta.registrarRecetaTelevidente(solicitud, "user123");
         });
     }
+    @Test
+    void testRegistrarParticipanteConError() {
+        Map<String, String> solicitud = new HashMap<>();
+        solicitud.put("nombre", "Maria Lopez");
+        when(servicioUsuario.registrarParticipante(anyString(), anyString(), anyString(), anyString(), anyString()))
+                .thenThrow(new RuntimeException("Error de validación"));
+
+        ResponseEntity<Usuario> respuesta = controladorUsuario.registrarParticipante(solicitud);
+        assertEquals(HttpStatus.BAD_REQUEST, respuesta.getStatusCode());
+    }
+
+    @Test
+    void testRegistrarCocineroJuradoConError() {
+        Map<String, String> solicitud = new HashMap<>();
+        solicitud.put("nombre", "Carlos Chef");
+        when(servicioUsuario.registrarCocineroJurado(anyString(), anyString(), anyString(), anyString()))
+                .thenThrow(new RuntimeException("Error de validación"));
+
+        ResponseEntity<Usuario> respuesta = controladorUsuario.registrarCocineroJurado(solicitud);
+        assertEquals(HttpStatus.BAD_REQUEST, respuesta.getStatusCode());
+    }
+    @Test
+    void testRegistrarRecetaParticipanteExitoso() {
+        Map<String, Object> solicitud = new HashMap<>();
+        solicitud.put("titulo", "Pasta Alfredo");
+        solicitud.put("ingredientes", ingredientes);
+        solicitud.put("pasosPreparacion", pasosPreparacion);
+        solicitud.put("temporada", "Temporada 1");
+
+        when(servicioReceta.registrarRecetaParticipante(anyString(), anyList(), anyList(), anyString(), anyString()))
+                .thenReturn(recetaParticipante);
+
+        ResponseEntity<?> respuesta = controladorReceta.registrarRecetaParticipante(solicitud, "user456");
+
+        assertEquals(HttpStatus.OK, respuesta.getStatusCode());
+        assertNotNull(respuesta.getBody());
+        assertEquals("Pasta Alfredo", ((Receta) respuesta.getBody()).getTitulo());
+    }
+
+    @Test
+    void testRegistrarRecetaParticipanteConError() {
+        Map<String, Object> solicitud = new HashMap<>();
+        solicitud.put("titulo", "Pasta Alfredo");
+        solicitud.put("ingredientes", ingredientes);
+        solicitud.put("pasosPreparacion", pasosPreparacion);
+        solicitud.put("temporada", "Temporada 1");
+
+        when(servicioReceta.registrarRecetaParticipante(anyString(), anyList(), anyList(), anyString(), anyString()))
+                .thenThrow(new RuntimeException("Error al registrar receta participante"));
+
+        ResponseEntity<?> respuesta = controladorReceta.registrarRecetaParticipante(solicitud, "user456");
+
+        assertEquals(HttpStatus.BAD_REQUEST, respuesta.getStatusCode());
+        assertEquals("Error al registrar receta participante", respuesta.getBody());
+    }
+
+    @Test
+    void testRegistrarRecetaCocineroExitoso() {
+        Map<String, Object> solicitud = new HashMap<>();
+        solicitud.put("titulo", "Risotto de Champiñones");
+        solicitud.put("ingredientes", ingredientes);
+        solicitud.put("pasosPreparacion", pasosPreparacion);
+
+        when(servicioReceta.registrarRecetaCocinero(anyString(), anyList(), anyList(), anyString()))
+                .thenReturn(recetaCocinero);
+
+        ResponseEntity<?> respuesta = controladorReceta.registrarRecetaCocinero(solicitud, "user789");
+
+        assertEquals(HttpStatus.OK, respuesta.getStatusCode());
+        assertNotNull(respuesta.getBody());
+        assertEquals("Risotto de Champiñones", ((Receta) respuesta.getBody()).getTitulo());
+    }
+
+    @Test
+    void testRegistrarRecetaCocineroConError() {
+        Map<String, Object> solicitud = new HashMap<>();
+        solicitud.put("titulo", "Risotto de Champiñones");
+        solicitud.put("ingredientes", ingredientes);
+        solicitud.put("pasosPreparacion", pasosPreparacion);
+
+        when(servicioReceta.registrarRecetaCocinero(anyString(), anyList(), anyList(), anyString()))
+                .thenThrow(new RuntimeException("Error al registrar receta cocinero"));
+
+        ResponseEntity<?> respuesta = controladorReceta.registrarRecetaCocinero(solicitud, "user789");
+
+        assertEquals(HttpStatus.BAD_REQUEST, respuesta.getStatusCode());
+        assertEquals("Error al registrar receta cocinero", respuesta.getBody());
+    }
 }

@@ -538,4 +538,109 @@ class ServiceTest {
         assertEquals("El ID del cocinero no puede estar vacío", exception.getMessage());
     }
 
+    @Test
+    void registrarRecetaTelevidente_TituloVacio_DeberiaLanzarExcepcion() {
+        List<Ingrediente> ingredientes = Arrays.asList(new Ingrediente("Harina", 200, "gramos"));
+        List<String> pasos = Arrays.asList("Paso 1", "Paso 2");
+
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
+            servicioReceta.registrarRecetaTelevidente("", ingredientes, pasos, "1");
+        });
+
+        assertEquals("El título no puede estar vacío", exception.getMessage());
+    }
+
+    @Test
+    void registrarRecetaTelevidente_UsuarioNoEncontrado_DeberiaLanzarExcepcion() {
+        List<Ingrediente> ingredientes = Arrays.asList(new Ingrediente("Harina", 200, "gramos"));
+        List<String> pasos = Arrays.asList("Paso 1", "Paso 2");
+
+        when(servicioUsuario.obtenerUsuarioPorId("99")).thenReturn(Optional.empty());
+
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
+            servicioReceta.registrarRecetaTelevidente("Titulo", ingredientes, pasos, "99");
+        });
+
+        assertEquals("Usuario no encontrado", exception.getMessage());
+    }
+
+    @Test
+    void registrarRecetaParticipante_TituloVacio_DeberiaLanzarExcepcion() {
+        List<Ingrediente> ingredientes = Arrays.asList(new Ingrediente("Harina", 200, "gramos"));
+        List<String> pasos = Arrays.asList("Paso 1", "Paso 2");
+
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
+            servicioReceta.registrarRecetaParticipante("", ingredientes, pasos, "1", "Temporada1");
+        });
+
+        assertEquals("El título no puede estar vacío", exception.getMessage());
+    }
+
+    @Test
+    void registrarRecetaParticipante_TemporadaVacia_DeberiaLanzarExcepcion() {
+        List<Ingrediente> ingredientes = Arrays.asList(new Ingrediente("Harina", 200, "gramos"));
+        List<String> pasos = Arrays.asList("Paso 1", "Paso 2");
+
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
+            servicioReceta.registrarRecetaParticipante("Titulo", ingredientes, pasos, "1", "");
+        });
+
+        assertEquals("La temporada no puede estar vacía", exception.getMessage());
+    }
+
+    @Test
+    void registrarRecetaParticipante_UsuarioNoEncontrado_DeberiaLanzarExcepcion() {
+        List<Ingrediente> ingredientes = Arrays.asList(new Ingrediente("Harina", 200, "gramos"));
+        List<String> pasos = Arrays.asList("Paso 1", "Paso 2");
+
+        when(servicioUsuario.obtenerUsuarioPorId("99")).thenReturn(Optional.empty());
+
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
+            servicioReceta.registrarRecetaParticipante("Titulo", ingredientes, pasos, "99", "Temporada1");
+        });
+
+        assertEquals("Usuario no encontrado", exception.getMessage());
+    }
+
+    @Test
+    void registrarRecetaCocinero_TituloVacio_DeberiaLanzarExcepcion() {
+        List<Ingrediente> ingredientes = Arrays.asList(new Ingrediente("Harina", 200, "gramos"));
+        List<String> pasos = Arrays.asList("Paso 1", "Paso 2");
+
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
+            servicioReceta.registrarRecetaCocinero("", ingredientes, pasos, "1");
+        });
+
+        assertEquals("El título no puede estar vacío", exception.getMessage());
+    }
+
+    @Test
+    void registrarRecetaCocinero_UsuarioNoEncontrado_DeberiaLanzarExcepcion() {
+        List<Ingrediente> ingredientes = Arrays.asList(new Ingrediente("Harina", 200, "gramos"));
+        List<String> pasos = Arrays.asList("Paso 1", "Paso 2");
+
+        when(servicioUsuario.obtenerUsuarioPorId("99")).thenReturn(Optional.empty());
+
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
+            servicioReceta.registrarRecetaCocinero("Titulo", ingredientes, pasos, "99");
+        });
+
+        assertEquals("Usuario no encontrado", exception.getMessage());
+    }
+
+
+    @Test
+    void guardarUsuario_CorreoExistente_DeberiaLanzarExcepcion() {
+        when(usuarioFactory.crearTelevidente(anyString(), anyString(), anyString(), anyString())).thenReturn(televidente);
+        when(validadorUsuario.validar(televidente)).thenReturn("Usuario válido");
+        when(repositorioUsuario.findByDocumento("123")).thenReturn(Optional.empty());
+        when(repositorioUsuario.findByCorreo("juan@test.com")).thenReturn(Optional.of(televidente));
+
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
+            servicioUsuarioReal.registrarTelevidente("Juan", "123", "123456789", "juan@test.com");
+        });
+
+        assertTrue(exception.getMessage().contains("Ya existe un usuario con el correo"));
+    }
+
 }
